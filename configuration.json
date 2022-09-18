@@ -54,7 +54,7 @@
 
 
     {
-        "name": "rcswitch_gpiopon",
+        "name": "rcswitch_gpiopin",
         "label": "RC Receiver GPIO Pin",
         "type": "int16_t",
         "value": "5"
@@ -72,7 +72,12 @@
         "length": 8,
         "value": "369950"
     },
-
+    {
+        "name": "switch_gpiopin",
+        "label": "GPIO Pin switched HIGH when button press detected",
+        "type": "int16_t",
+        "value": "-1"
+    },
 
 
     {

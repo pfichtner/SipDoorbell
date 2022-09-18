@@ -18,6 +18,7 @@ PubSubClient MQTTclient(espClient);
 
 // SIP
 const long DIAL_DEBOUNCE_MILLIS = 5 * 1000;
+boolean dialInProgress;
 unsigned long dialingStartedAt = millis() - DIAL_DEBOUNCE_MILLIS;
 char acSipIn[2048];
 char acSipOut[2048];
@@ -35,11 +36,10 @@ struct task
 
 task taskA = {.rate = 1000, .previous = 0};
 
-void publishMQTT(void)
+void publishMQTT(boolean state)
 {
   String topic = String(configManager.data.wifi_hostname) + "/sensor/state";
-  MQTTclient.publish(topic.c_str(), "ON");
-  MQTTclient.publish(topic.c_str(), "OFF");
+  MQTTclient.publish(topic.c_str(), state ? "ON" : "OFF");
 }
 
 void reconnect(void)
@@ -65,7 +65,7 @@ void setup()
   WiFiManager.begin(configManager.data.projectName);
   timeSync.begin();
 
-  mySwitch.enableReceive(configManager.data.rcswitch_gpiopon);
+  mySwitch.enableReceive(configManager.data.rcswitch_gpiopin);
 
   WiFi.hostname(configManager.data.wifi_hostname);
   WiFi.begin();
@@ -80,8 +80,32 @@ void setup()
   aSip.Init(configManager.data.sip_server, configManager.data.sip_port, ipAddr, 5060, configManager.data.sip_user, configManager.data.sip_password, configManager.data.sip_ringsecs);
 }
 
+void switchPin(boolean state)
+{
+  if (configManager.data.switch_gpiopin > 0)
+  {
+    digitalWrite(configManager.data.switch_gpiopin, state ? 1 : 0);
+  }
+}
+
+void setDialInProgress(boolean dialInProgress_)
+{
+  if (dialInProgress != dialInProgress_)
+  {
+    dialInProgress = dialInProgress_;
+    switchPin(dialInProgress);
+    publishMQTT(dialInProgress);
+  }
+}
+
 void dial(void)
 {
+  if (dialInProgress)
+  {
+    Serial.println("Dialing already in progress");
+    return;
+  }
+  setDialInProgress(true);
   Serial.print("dialing ");
   Serial.print(configManager.data.sip_numbertodial);
   Serial.print(" as ");
@@ -104,16 +128,7 @@ void RCSwitchLoop(void)
     if (mySwitch.getReceivedValue() == configManager.data.rcswitch_value && (configManager.data.rcswitch_protocol < 0 || mySwitch.getReceivedProtocol() == configManager.data.rcswitch_protocol))
     {
       Serial.println("rccode matching");
-
-      if (millis() < dialingStartedAt + DIAL_DEBOUNCE_MILLIS)
-      {
-        Serial.println("Dialing already in progress");
-      }
-      else
-      {
-        publishMQTT();
-        dial();
-      }
+      dial();
     }
     else
     {
@@ -131,8 +146,18 @@ void loop()
   configManager.loop();
   MQTTclient.loop();
 
+  if (millis() >= dialingStartedAt + DIAL_DEBOUNCE_MILLIS)
+  {
+    setDialInProgress(false);
+  }
+
   SIPloop();
   RCSwitchLoop();
+
+  if (dialInProgress && millis() >= dialingStartedAt + DIAL_DEBOUNCE_MILLIS)
+  {
+    setDialInProgress(false);
+  }
 
   // tasks
   if (taskA.previous == 0 || (millis() - taskA.previous > taskA.rate))
