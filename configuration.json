@@ -1,0 +1,126 @@
+[
+    {
+        "name": "projectName",
+        "label": "Project Name",
+        "type": "char",
+        "disabled": true,
+        "hidden": true,
+        "length": 32,
+        "value": "Doorbell"
+    },
+    {
+        "name": "language",        
+        "type": "char",
+        "length": 3,
+        "value": "en",
+        "hidden": true
+    },
+
+
+    {
+        "name": "mqtt_server",
+        "label": "MQTT Server IP/FQDN",
+        "type": "char",
+        "length": 20,
+        "value": "mqtt"
+    },
+    {
+        "name": "mqtt_port",
+        "label": "MQTT Port",
+        "type": "int16_t",
+        "value": 1883
+    },
+    {
+        "name": "mqtt_user",
+        "label": "MQTT User Name",
+        "type": "char",
+        "length": 20,
+        "value": ""
+    },
+    {
+        "name": "mqtt_password",
+        "label": "MQTT Password",
+        "type": "char",
+        "length": 20,
+        "value": ""
+    },
+    {
+        "name": "wifi_hostname",
+        "label": "WiFi Hostname",
+        "type": "char",
+        "length": 20,
+        "value": "doorbell"
+    },
+
+
+    {
+        "name": "rcswitch_gpiopon",
+        "label": "RC Receiver GPIO Pin",
+        "type": "int16_t",
+        "value": "5"
+    },
+    {
+        "name": "rcswitch_protocol",
+        "label": "RC protocol (-1 for any)",
+        "type": "int16_t",
+        "value": "23"
+    },
+    {
+        "name": "rcswitch_value",
+        "label": "RC code as decimal",
+        "type": "uint32_t",
+        "length": 8,
+        "value": "369950"
+    },
+
+
+
+    {
+        "name": "sip_server",
+        "label": "SIP Server IP/FQDN",
+        "type": "char",
+        "length": 20,
+        "value": "fritz.box"
+    },
+    {
+        "name": "sip_port",
+        "label": "SIP Port",
+        "type": "int16_t",
+        "value": 5060
+    },
+    {
+        "name": "sip_user",
+        "label": "SIP User Name",
+        "type": "char",
+        "length": 20,
+        "value": ""
+    },
+    {
+        "name": "sip_password",
+        "label": "SIP Password",
+        "type": "char",
+        "length": 20,
+        "value": ""
+    },
+    {
+        "name": "sip_ringsecs",
+        "label": "Ring Time Seconds",
+        "type": "int16_t",
+        "value": "15"
+    },
+    {
+        "name": "sip_numbertodial",
+        "label": "SIP Number To Dial",
+        "type": "char",
+        "length": 20,
+        "value": "**9"
+    },
+    {
+        "name": "sip_callername",
+        "label": "SIP Name of Caller",
+        "type": "char",
+        "length": 20,
+        "value": "Doorbell #1"
+    }
+
+]

@@ -1,0 +1,33 @@
+[
+    {
+        "name": "Version",
+        "type": "char",
+        "length": 6,
+        "direction": "display"
+    },
+    {
+        "name": "Wifi_RSSI",
+        "type": "char",
+        "length": 6,
+        "direction": "display"
+    },
+    {
+        "name": "MQTT_Connected",
+        "type": "bool",
+        "direction": "display"
+    },
+    {
+        "name": "WLAN_RSSI",
+        "type": "int8_t",
+        "direction": "display",
+        "display": "graph",
+        "xaxis": 50
+    },
+    {
+        "name": "Sensor",
+        "type": "int8_t",
+        "direction": "display",
+        "display": "graph",
+        "xaxis": 50
+    }
+]
