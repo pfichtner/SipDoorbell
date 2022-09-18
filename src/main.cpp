@@ -17,7 +17,6 @@ int mqttReconnect;
 PubSubClient MQTTclient(espClient);
 
 // SIP
-const long DIAL_DEBOUNCE_MILLIS = 5 * 1000;
 boolean dialInProgress;
 unsigned long dialingStartedAt;
 char acSipIn[2048];
@@ -169,7 +168,7 @@ void loop()
   configManager.loop();
   MQTTclient.loop();
 
-  if (dialInProgress && millis() >= dialingStartedAt + DIAL_DEBOUNCE_MILLIS)
+  if (dialInProgress && millis() >= dialingStartedAt + configManager.data.sip_ringsecs * 1000)
   {
     setDialInProgress(false);
   }
