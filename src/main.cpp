@@ -19,7 +19,7 @@ PubSubClient MQTTclient(espClient);
 // SIP
 const long DIAL_DEBOUNCE_MILLIS = 5 * 1000;
 boolean dialInProgress;
-unsigned long dialingStartedAt = millis() - DIAL_DEBOUNCE_MILLIS;
+unsigned long dialingStartedAt;
 char acSipIn[2048];
 char acSipOut[2048];
 Sip aSip(acSipOut, sizeof(acSipOut));
@@ -106,13 +106,12 @@ void dial(void)
     return;
   }
   setDialInProgress(true);
+  dialingStartedAt = millis();
   Serial.print("dialing ");
   Serial.print(configManager.data.sip_numbertodial);
   Serial.print(" as ");
   Serial.println(configManager.data.sip_callername);
-  dialingStartedAt = millis();
   aSip.Dial(configManager.data.sip_numbertodial, configManager.data.sip_callername);
-  Serial.println("dialing done");
 }
 
 void SIPloop(void)
@@ -146,18 +145,13 @@ void loop()
   configManager.loop();
   MQTTclient.loop();
 
-  if (millis() >= dialingStartedAt + DIAL_DEBOUNCE_MILLIS)
+  if (dialInProgress && millis() >= dialingStartedAt + DIAL_DEBOUNCE_MILLIS)
   {
     setDialInProgress(false);
   }
 
   SIPloop();
   RCSwitchLoop();
-
-  if (dialInProgress && millis() >= dialingStartedAt + DIAL_DEBOUNCE_MILLIS)
-  {
-    setDialInProgress(false);
-  }
 
   // tasks
   if (taskA.previous == 0 || (millis() - taskA.previous > taskA.rate))
