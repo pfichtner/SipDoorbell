@@ -5,23 +5,25 @@
 #include "webServer.h"
 #include "updater.h"
 #include "configManager.h"
-#include "timeSync.h"
 #include <RCSwitch.h>
 #include <ArduinoSIP.h>
 
 #include "rc_switch_output.h"
 
-// MQTT
+// WIFI
 WiFiClient espClient;
-int mqttReconnect;
+String localIp;
+
+// MQTT
 PubSubClient MQTTclient(espClient);
+int mqttReconnect = 60 * 42;
 
 // SIP
-boolean dialInProgress;
-unsigned long dialingStartedAt;
 char acSipIn[2048];
 char acSipOut[2048];
 Sip aSip(acSipOut, sizeof(acSipOut));
+boolean dialInProgress;
+unsigned long dialingStartedAt;
 
 // RCSWITCH
 RCSwitch mySwitch = RCSwitch();
@@ -37,8 +39,8 @@ task taskA = {.rate = 1000, .previous = 0};
 
 void publishMQTT(boolean state)
 {
-  String topic = String(configManager.data.wifi_hostname) + "/sensor/state";
-  MQTTclient.publish(topic.c_str(), state ? "ON" : "OFF");
+  String stateTopic = String(configManager.data.wifi_hostname) + "/sensor/state";
+  MQTTclient.publish(stateTopic.c_str(), state ? "ON" : "OFF");
 }
 
 void reconnect(void)
@@ -50,25 +52,36 @@ void reconnect(void)
     {
       String clientId = String(configManager.data.projectName);
       MQTTclient.connect(clientId.c_str(), configManager.data.mqtt_user, configManager.data.mqtt_password);
+      Serial.print("Connected to MQTT Broker (clientId ");
+      Serial.print(clientId);
+      Serial.println(")");
     }
   }
 }
 
-void setup()
+void sipInit(void)
 {
-  Serial.begin(115200);
+  // TODO use random port?
+  // int localPort = random(1 * 1024, 64 * 1024);
+  int localPort = 5060;
 
-  LittleFS.begin();
-  GUI.begin();
-  configManager.begin();
-  WiFiManager.begin(configManager.data.projectName);
-  timeSync.begin();
+  Serial.print("Configuring SIP server ");
+  Serial.print(configManager.data.sip_server);
+  Serial.print(":");
+  Serial.print(configManager.data.sip_port);
+  Serial.print(" using ");
+  Serial.print(configManager.data.sip_user);
+  Serial.print("@***** (local ");
+  Serial.print(localIp);
+  Serial.print(":");
+  Serial.print(localPort);
+  Serial.println(")");
 
-  mySwitch.enableReceive(configManager.data.rcswitch_gpiopin);
+  aSip.Init(configManager.data.sip_server, configManager.data.sip_port, localIp.c_str(), localPort, configManager.data.sip_user, configManager.data.sip_password, configManager.data.sip_ringsecs);
+}
 
-  WiFi.hostname(configManager.data.wifi_hostname);
-  WiFi.begin();
-
+void mqttInit(void)
+{
   if (configManager.data.mqtt_server[0] == '\0' || configManager.data.mqtt_port <= 0)
   {
     Serial.println("MQTT not configured");
@@ -79,28 +92,49 @@ void setup()
     Serial.print("Configuring MQTT Broker ");
     Serial.print(configManager.data.mqtt_server);
     Serial.print(":");
-    Serial.print(configManager.data.mqtt_port);
+    Serial.println(configManager.data.mqtt_port);
   }
+}
 
-  auto ipAddr = WiFi.localIP().toString().c_str();
-  // TODO use random port?
-  auto port = 5060;
+void inputPinInit(void)
+{
+  if (configManager.data.button_gpiopin > 0)
+  {
+    pinMode(configManager.data.button_gpiopin, INPUT);
+  }
+}
 
-  Serial.print("Configuring SIP server ");
-  Serial.print(configManager.data.sip_server);
-  Serial.print(":");
-  Serial.print(configManager.data.sip_port);
-  Serial.print(" using ");
-  Serial.print(configManager.data.sip_user);
-  Serial.print("@");
-  Serial.print(configManager.data.sip_password);
-  Serial.print(" (local ");
-  Serial.print(ipAddr);
-  Serial.print(":");
-  Serial.print(port);
-  Serial.println(")");
+void rcSwitchInit(void)
+{
+  mySwitch.enableReceive(configManager.data.rcswitch_gpiopin);
+}
 
-  aSip.Init(configManager.data.sip_server, configManager.data.sip_port, ipAddr, port, configManager.data.sip_user, configManager.data.sip_password, configManager.data.sip_ringsecs);
+void configDependenInits(void)
+{
+  mqttInit();
+  sipInit();
+
+  inputPinInit();
+  rcSwitchInit();
+}
+
+void setup()
+{
+  Serial.begin(115200);
+
+  LittleFS.begin();
+  GUI.begin();
+  configManager.begin();
+  configManager.setConfigSaveCallback(configDependenInits);
+  WiFiManager.begin(configManager.data.projectName);
+  WiFi.hostname(configManager.data.wifi_hostname);
+  WiFi.begin();
+
+  localIp = WiFi.localIP().toString();
+  Serial.print("Connected, local IP address is ");
+  Serial.println(localIp);
+
+  configDependenInits();
 }
 
 void switchPin(boolean state)

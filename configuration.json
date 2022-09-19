@@ -73,6 +73,12 @@
         "value": "369950"
     },
     {
+        "name": "button_gpiopin",
+        "label": "GPIO Pin to connect a push button which triggers a call",
+        "type": "int16_t",
+        "value": "-1"
+    },
+    {
         "name": "switch_gpiopin",
         "label": "GPIO Pin switched HIGH when button press detected",
         "type": "int16_t",
