@@ -36,7 +36,7 @@ struct task
 
 task taskA = {.rate = 10 * 1000, .previous = 0};
 
-void publishMQTT(boolean state)
+void mqttPublish(boolean state)
 {
   String stateTopic = String(configManager.data.wifi_hostname) + "/sensor/state";
   mqttClient.publish(stateTopic.c_str(), state ? "ON" : "OFF");
@@ -92,7 +92,10 @@ void inputPinBegin(void)
     Serial.println(F(" configured for input button"));
     pinMode(configManager.data.button_gpiopin, INPUT);
   }
-  Serial.println("no input button configured");
+  else
+  {
+    Serial.println("no input button configured");
+  }
 }
 
 void rcSwitchBegin(void)
@@ -145,7 +148,7 @@ void setDialInProgress(boolean dialInProgress_)
   {
     dialInProgress = dialInProgress_;
     switchPin(dialInProgress);
-    publishMQTT(dialInProgress);
+    mqttPublish(dialInProgress);
   }
 }
 
