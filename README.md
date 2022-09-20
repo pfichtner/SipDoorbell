@@ -1,15 +1,21 @@
-Why?
-----
-Wifi Türklingel, ESP-Überallklingel and others: 
-- no 433 MHz support
-- projects rely on TR-064
-- hard coded values (WiFi settings, SIP settings, ...)
+SipDoorBell
+-----------
 
-ESPHome -> 433 MHz support very limited
-ESPHome -> cannot configure variables that should be on the node
+ESP8266-based doorbell that does initiate SIP calls. 
+
+Why not...?
+-----------
+- Wifi Türklingel, ESP-Überallklingel and others: 
+  - no 433 MHz support
+  - projects rely on TR-064
+  - hard coded values (WiFi settings, SIP settings, ...)
+
+- ESPHome -> 433 MHz support very limited
+- ESPHome -> cannot configure variables that should be on the node
 
 Features
 --------
+- Configurable via Web-Interface so no need to compile your own firmware, you just need to download and to flash the microcontroller (see https://tasmota.github.io/docs/devices/Wemos-D1-Mini/ for example for how to flash a D1 mini)
 - Acts as normal SIP-Client so it can be used not only with TR064-enabled devices but every SIP-Server/SIP-enabled hardware
 - Can can be initiated via 433 MHz signal (e.g. wireless doorbell sender)
 - Can can be initiated via button (e.g. a simple push button and/or optocoppler to make an existent doorbell a smart doorbell)
@@ -19,6 +25,23 @@ Features
 
 TODOs
 -----
-WLAN-AP with PSK including "+" not working -> File issue
-protect HTTP access
-Learn mode for 433 MHz signals?
+- Dashboard disabling or adding sensible data
+- CICD via GHA and artefact releasing
+- WLAN-AP with PSK including "+" not working -> https://github.com/maakbaas/esp8266-iot-framework/issues/155
+- protect HTTP access
+- Learn mode for 433 MHz signals?
+- Support for door relais, see https://www.mikrocontroller.net/topic/444994#5814241
+- Could include TR-064 as well as alternative to SIP
+
+Projects used
+-------------
+- ESP8266 IoT Framework
+- knolleary/PubSubClient
+- https://github.com/1technophile/rc-switch.git
+- https://github.com/dl9sec/ArduinoSIP.git
+
+Possible useful projects
+------------------------
+- https://github.com/RetepRelleum/SipMachine
+- https://github.com/rousir/ArduinoVoip
+
