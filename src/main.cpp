@@ -15,8 +15,7 @@ WiFiClient espClient;
 String localIp;
 
 // MQTT
-PubSubClient MQTTclient(espClient);
-int mqttReconnect = 60 * 42;
+PubSubClient mqttClient(espClient);
 
 // SIP
 char acSipIn[2048];
@@ -35,87 +34,79 @@ struct task
   unsigned long previous;
 };
 
-task taskA = {.rate = 1000, .previous = 0};
+task taskA = {.rate = 10 * 1000, .previous = 0};
 
 void publishMQTT(boolean state)
 {
   String stateTopic = String(configManager.data.wifi_hostname) + "/sensor/state";
-  MQTTclient.publish(stateTopic.c_str(), state ? "ON" : "OFF");
+  mqttClient.publish(stateTopic.c_str(), state ? "ON" : "OFF");
 }
 
-void reconnect(void)
+void mqttReconnect(void)
 {
-  if (++mqttReconnect > 60)
-  {
-    mqttReconnect = 0;
-    if (!MQTTclient.connected())
-    {
-      String clientId = String(configManager.data.projectName);
-      MQTTclient.connect(clientId.c_str(), configManager.data.mqtt_user, configManager.data.mqtt_password);
-      Serial.print("Connected to MQTT Broker (clientId ");
-      Serial.print(clientId);
-      Serial.println(")");
-    }
-  }
+  String clientId = String(configManager.data.projectName);
+  mqttClient.connect(clientId.c_str(), configManager.data.mqtt_user, configManager.data.mqtt_password);
+  Serial.print(F("Connected to MQTT Broker, clientId "));
+  Serial.println(clientId);
 }
 
-void sipInit(void)
+void sipBegin(void)
 {
   // TODO use random port?
   // int localPort = random(1 * 1024, 64 * 1024);
   int localPort = 5060;
 
-  Serial.print("Configuring SIP server ");
-  Serial.print(configManager.data.sip_server);
-  Serial.print(":");
-  Serial.print(configManager.data.sip_port);
-  Serial.print(" using ");
-  Serial.print(configManager.data.sip_user);
-  Serial.print("@***** (local ");
+  Serial.print(F("Configuring SIP connection from "));
   Serial.print(localIp);
   Serial.print(":");
-  Serial.print(localPort);
-  Serial.println(")");
+  Serial.println(localPort);
+  Serial.print(F(" to "));
+  Serial.print(configManager.data.sip_server);
+  Serial.print(":");
+  Serial.println(configManager.data.sip_port);
 
   aSip.Init(configManager.data.sip_server, configManager.data.sip_port, localIp.c_str(), localPort, configManager.data.sip_user, configManager.data.sip_password, configManager.data.sip_ringsecs);
 }
 
-void mqttInit(void)
+void mqttBegin(void)
 {
-  if (configManager.data.mqtt_server[0] == '\0' || configManager.data.mqtt_port <= 0)
+  if (strlen(configManager.data.mqtt_server) == 0 || configManager.data.mqtt_port <= 0)
   {
     Serial.println("MQTT not configured");
   }
   else
   {
-    MQTTclient.setServer(configManager.data.mqtt_server, configManager.data.mqtt_port);
-    Serial.print("Configuring MQTT Broker ");
+    mqttClient.setServer(configManager.data.mqtt_server, configManager.data.mqtt_port);
+    Serial.print(F("Configuring MQTT Broker "));
     Serial.print(configManager.data.mqtt_server);
     Serial.print(":");
     Serial.println(configManager.data.mqtt_port);
   }
 }
 
-void inputPinInit(void)
+void inputPinBegin(void)
 {
   if (configManager.data.button_gpiopin > 0)
   {
+    Serial.print(configManager.data.button_gpiopin);
+    Serial.println(F(" configured for input button"));
     pinMode(configManager.data.button_gpiopin, INPUT);
   }
+  Serial.println("no input button configured");
 }
 
-void rcSwitchInit(void)
+void rcSwitchBegin(void)
 {
   mySwitch.enableReceive(configManager.data.rcswitch_gpiopin);
 }
 
-void configDependenInits(void)
+void configDependendBegins(void)
 {
-  mqttInit();
-  sipInit();
+  mqttBegin();
+  sipBegin();
 
-  inputPinInit();
-  rcSwitchInit();
+  inputPinBegin();
+  rcSwitchBegin();
 }
 
 void setup()
@@ -125,23 +116,26 @@ void setup()
   LittleFS.begin();
   GUI.begin();
   configManager.begin();
-  configManager.setConfigSaveCallback(configDependenInits);
+  configManager.setConfigSaveCallback(configDependendBegins);
   WiFiManager.begin(configManager.data.projectName);
   WiFi.hostname(configManager.data.wifi_hostname);
   WiFi.begin();
 
   localIp = WiFi.localIP().toString();
-  Serial.print("Connected, local IP address is ");
-  Serial.println(localIp);
+  Serial.print(F("Connected"));
 
-  configDependenInits();
+  configDependendBegins();
 }
 
 void switchPin(boolean state)
 {
   if (configManager.data.switch_gpiopin > 0)
   {
-    digitalWrite(configManager.data.switch_gpiopin, state ? 1 : 0);
+    digitalWrite(configManager.data.switch_gpiopin, state ? HIGH : LOW);
+    Serial.print(F("switched pin "));
+    Serial.print(configManager.data.button_gpiopin);
+    Serial.println(": ");
+    Serial.println(state ? "HIGH" : "LOW");
   }
 }
 
@@ -159,7 +153,7 @@ void dial(void)
 {
   if (dialInProgress)
   {
-    Serial.println("Dialing already in progress");
+    Serial.println(F("Dialing already in progress"));
     return;
   }
   setDialInProgress(true);
@@ -171,24 +165,34 @@ void dial(void)
   aSip.Dial(configManager.data.sip_numbertodial, configManager.data.sip_callername);
 }
 
-void SIPloop(void)
+void buttonLoop(void)
+{
+  if (digitalRead(configManager.data.button_gpiopin) == HIGH)
+  {
+    Serial.print(configManager.data.button_gpiopin);
+    Serial.println(F(" button press detected"));
+    dial();
+  }
+}
+
+void sipLoop(void)
 {
   aSip.Processing(acSipIn, sizeof(acSipIn));
 }
 
-void RCSwitchLoop(void)
+void rcSwitchLoop(void)
 {
   if (mySwitch.available())
   {
     output(mySwitch.getReceivedValue(), mySwitch.getReceivedBitlength(), mySwitch.getReceivedDelay(), mySwitch.getReceivedRawdata(), mySwitch.getReceivedProtocol());
     if (mySwitch.getReceivedValue() == configManager.data.rcswitch_value && (configManager.data.rcswitch_protocol < 0 || mySwitch.getReceivedProtocol() == configManager.data.rcswitch_protocol))
     {
-      Serial.println("rccode matching");
+      Serial.println(F("rc-code matching"));
       dial();
     }
     else
     {
-      Serial.println("rccode does not match");
+      Serial.println(F("rc-code does not match"));
     }
     mySwitch.resetAvailable();
   }
@@ -200,20 +204,26 @@ void loop()
   WiFiManager.loop();
   updater.loop();
   configManager.loop();
-  MQTTclient.loop();
+  mqttClient.loop();
 
-  if (dialInProgress && millis() >= dialingStartedAt + configManager.data.sip_ringsecs * 1000)
+  unsigned long now = millis();
+
+  if (dialInProgress && now >= dialingStartedAt + configManager.data.sip_ringsecs * 1000)
   {
     setDialInProgress(false);
   }
 
-  SIPloop();
-  RCSwitchLoop();
+  buttonLoop();
+  sipLoop();
+  rcSwitchLoop();
 
   // tasks
-  if (taskA.previous == 0 || (millis() - taskA.previous > taskA.rate))
+  if (!mqttClient.connected())
   {
-    taskA.previous = millis();
-    reconnect();
+    if (taskA.previous == 0 || (now - taskA.previous > taskA.rate))
+    {
+      taskA.previous = now;
+      mqttReconnect();
+    }
   }
 }
