@@ -26,7 +26,7 @@ Features
 TODOs
 -----
 - Dashboard disabling or adding sensible data
-- CICD via GHA and artefact releasing
+- artefact releasing via GHA action
 - WLAN-AP with PSK including "+" not working -> https://github.com/maakbaas/esp8266-iot-framework/issues/155
 - protect HTTP access
 - Learn mode for 433 MHz signals?
