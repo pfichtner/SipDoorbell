@@ -181,6 +181,12 @@ void buttonLoop(void)
 void sipLoop(void)
 {
   aSip.Processing(acSipIn, sizeof(acSipIn));
+  char iSignal = aSip.GetSignal();
+  if (iSignal)
+  {
+    Serial.print("Signal received: ");
+    Serial.println(iSignal);
+  }
 }
 
 void rcSwitchLoop(void)
