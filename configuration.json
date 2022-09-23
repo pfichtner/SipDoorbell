@@ -63,14 +63,14 @@
         "name": "rcswitch_protocol",
         "label": "RC protocol (-1 for any)",
         "type": "int16_t",
-        "value": "23"
+        "value": "-1"
     },
     {
         "name": "rcswitch_value",
         "label": "RC code as decimal",
         "type": "uint32_t",
         "length": 8,
-        "value": "369950"
+        "value": "0"
     },
     {
         "name": "button_gpiopin",
