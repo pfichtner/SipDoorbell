@@ -10,6 +10,8 @@
 
 #include "rc_switch_output.h"
 
+#define DTMF-HANDLING
+
 // WIFI
 WiFiClient espClient;
 String localIp;
@@ -181,12 +183,15 @@ void buttonLoop(void)
 void sipLoop(void)
 {
   aSip.Processing(acSipIn, sizeof(acSipIn));
+  #ifdef DTMF-HANDLING
+  // preparation for possible opener
   char iSignal = aSip.GetSignal();
   if (iSignal)
   {
     Serial.print("Signal received: ");
     Serial.println(iSignal);
   }
+  #endif
 }
 
 void rcSwitchLoop(void)
