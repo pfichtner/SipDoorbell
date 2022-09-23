@@ -5,12 +5,13 @@
 #include "webServer.h"
 #include "updater.h"
 #include "configManager.h"
+#include "dashboard.h"
 #include <RCSwitch.h>
 #include <ArduinoSIP.h>
 
 #include "rc_switch_output.h"
 
-#define DTMF-HANDLING
+#define DTMF_HANDLING
 
 // WIFI
 WiFiClient espClient;
@@ -23,7 +24,6 @@ PubSubClient mqttClient(espClient);
 char acSipIn[2048];
 char acSipOut[2048];
 Sip aSip(acSipOut, sizeof(acSipOut));
-boolean dialInProgress;
 unsigned long dialingStartedAt;
 
 // RCSWITCH
@@ -37,6 +37,7 @@ struct task
 };
 
 task taskA = {.rate = 10 * 1000, .previous = 0};
+task taskB = {.rate = 10 * 1000, .previous = 0};
 
 void mqttPublish(boolean state)
 {
@@ -123,6 +124,7 @@ void setup()
   configManager.begin();
   configManager.setConfigSaveCallback(configDependendBegins);
   WiFiManager.begin(configManager.data.projectName);
+  dash.begin(500);
   WiFi.hostname(configManager.data.wifi_hostname);
   WiFi.begin();
 
@@ -144,11 +146,11 @@ void switchPin(boolean state)
   }
 }
 
-void setDialInProgress(boolean dialInProgress_)
+void setDialInProgress(boolean dialInProgress)
 {
-  if (dialInProgress != dialInProgress_)
+  if (dash.data.dialInProgress != dialInProgress)
   {
-    dialInProgress = dialInProgress_;
+    dash.data.dialInProgress = dialInProgress;
     switchPin(dialInProgress);
     mqttPublish(dialInProgress);
   }
@@ -156,7 +158,7 @@ void setDialInProgress(boolean dialInProgress_)
 
 void dial(void)
 {
-  if (dialInProgress)
+  if (dash.data.dialInProgress)
   {
     Serial.println(F("Dialing already in progress"));
     return;
@@ -183,7 +185,7 @@ void buttonLoop(void)
 void sipLoop(void)
 {
   aSip.Processing(acSipIn, sizeof(acSipIn));
-  #ifdef DTMF-HANDLING
+#ifdef DTMF_HANDLING
   // preparation for possible opener
   char iSignal = aSip.GetSignal();
   if (iSignal)
@@ -191,13 +193,14 @@ void sipLoop(void)
     Serial.print("Signal received: ");
     Serial.println(iSignal);
   }
-  #endif
+#endif
 }
 
 void rcSwitchLoop(void)
 {
   if (mySwitch.available())
   {
+    dash.data.rcswitch_value = mySwitch.getReceivedValue();
     output(mySwitch.getReceivedValue(), mySwitch.getReceivedBitlength(), mySwitch.getReceivedDelay(), mySwitch.getReceivedRawdata(), mySwitch.getReceivedProtocol());
     if (mySwitch.getReceivedValue() == configManager.data.rcswitch_value && (configManager.data.rcswitch_protocol < 0 || mySwitch.getReceivedProtocol() == configManager.data.rcswitch_protocol))
     {
@@ -222,7 +225,7 @@ void loop()
 
   unsigned long now = millis();
 
-  if (dialInProgress && now >= dialingStartedAt + configManager.data.sip_ringsecs * 1000)
+  if (dash.data.dialInProgress && now >= dialingStartedAt + configManager.data.sip_ringsecs * 1000)
   {
     setDialInProgress(false);
   }
@@ -239,5 +242,12 @@ void loop()
       taskA.previous = now;
       mqttReconnect();
     }
+  }
+
+  if (taskB.previous == 0 || (now - taskB.previous > taskB.rate))
+  {
+    taskB.previous = now;
+    dash.data.WiFi_RSSI = WiFi.RSSI();
+    dash.data.MQTT_Connected = mqttClient.connected();
   }
 }

@@ -25,7 +25,6 @@ Features
 
 TODOs
 -----
-- Dashboard disabling or adding sensible data
 - artefact releasing via GHA action
 - WLAN-AP with PSK including "+" not working -> https://github.com/maakbaas/esp8266-iot-framework/issues/155
 - protect HTTP access
@@ -44,4 +43,5 @@ Possible useful projects
 ------------------------
 - https://github.com/RetepRelleum/SipMachine
 - https://github.com/rousir/ArduinoVoip
+- https://github.com/chrta/sip_call
 

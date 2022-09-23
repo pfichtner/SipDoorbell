@@ -1,15 +1,10 @@
 [
     {
-        "name": "Version",
-        "type": "char",
-        "length": 6,
-        "direction": "display"
-    },
-    {
-        "name": "Wifi_RSSI",
-        "type": "char",
-        "length": 6,
-        "direction": "display"
+        "name": "WiFi_RSSI",
+        "type": "int8_t",
+        "direction": "display",
+        "display": "graph",
+        "xaxis": 50
     },
     {
         "name": "MQTT_Connected",
@@ -17,17 +12,15 @@
         "direction": "display"
     },
     {
-        "name": "WLAN_RSSI",
-        "type": "int8_t",
-        "direction": "display",
-        "display": "graph",
-        "xaxis": 50
+        "name": "dialInProgress",
+        "type": "bool",
+        "direction": "display"
     },
     {
-        "name": "Sensor",
-        "type": "int8_t",
-        "direction": "display",
-        "display": "graph",
-        "xaxis": 50
+        "name": "rcswitch_value",
+        "type": "uint32_t",
+        "length": 8,
+        "direction": "display"
     }
+
 ]
