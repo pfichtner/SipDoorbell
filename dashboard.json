@@ -21,6 +21,12 @@
         "type": "uint32_t",
         "length": 8,
         "direction": "display"
+    },
+    {
+        "name": "rcswitch_protocol",
+        "type": "uint8_t",
+        "length": 8,
+        "direction": "display"
     }
 
 ]

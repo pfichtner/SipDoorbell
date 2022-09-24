@@ -37,7 +37,6 @@ struct task
 };
 
 task taskA = {.rate = 10 * 1000, .previous = 0};
-task taskB = {.rate = 10 * 1000, .previous = 0};
 
 void mqttPublish(boolean state)
 {
@@ -47,10 +46,14 @@ void mqttPublish(boolean state)
 
 void mqttReconnect(void)
 {
-  String clientId = String(configManager.data.projectName);
-  mqttClient.connect(clientId.c_str(), configManager.data.mqtt_user, configManager.data.mqtt_password);
-  Serial.print(F("Connected to MQTT Broker, clientId "));
-  Serial.println(clientId);
+  dash.data.MQTT_Connected = mqttClient.connected();
+  if (!dash.data.MQTT_Connected)
+  {
+    String clientId = String(configManager.data.projectName);
+    mqttClient.connect(clientId.c_str(), configManager.data.mqtt_user, configManager.data.mqtt_password);
+    Serial.print(F("Connected to MQTT Broker, clientId "));
+    Serial.println(clientId);
+  }
 }
 
 void sipBegin(void)
@@ -62,7 +65,7 @@ void sipBegin(void)
   Serial.print(F("Configuring SIP connection from "));
   Serial.print(localIp);
   Serial.print(":");
-  Serial.println(localPort);
+  Serial.print(localPort);
   Serial.print(F(" to "));
   Serial.print(configManager.data.sip_server);
   Serial.print(":");
@@ -201,6 +204,7 @@ void rcSwitchLoop(void)
   if (mySwitch.available())
   {
     dash.data.rcswitch_value = mySwitch.getReceivedValue();
+    dash.data.rcswitch_protocol = mySwitch.getReceivedProtocol();
     output(mySwitch.getReceivedValue(), mySwitch.getReceivedBitlength(), mySwitch.getReceivedDelay(), mySwitch.getReceivedRawdata(), mySwitch.getReceivedProtocol());
     if (mySwitch.getReceivedValue() == configManager.data.rcswitch_value && (configManager.data.rcswitch_protocol < 0 || mySwitch.getReceivedProtocol() == configManager.data.rcswitch_protocol))
     {
@@ -221,6 +225,7 @@ void loop()
   WiFiManager.loop();
   updater.loop();
   configManager.loop();
+  dash.loop();
   mqttClient.loop();
 
   unsigned long now = millis();
@@ -235,19 +240,10 @@ void loop()
   rcSwitchLoop();
 
   // tasks
-  if (!mqttClient.connected())
+  if (taskA.previous == 0 || (now - taskA.previous > taskA.rate))
   {
-    if (taskA.previous == 0 || (now - taskA.previous > taskA.rate))
-    {
-      taskA.previous = now;
-      mqttReconnect();
-    }
-  }
-
-  if (taskB.previous == 0 || (now - taskB.previous > taskB.rate))
-  {
-    taskB.previous = now;
+    taskA.previous = now;
     dash.data.WiFi_RSSI = WiFi.RSSI();
-    dash.data.MQTT_Connected = mqttClient.connected();
+    mqttReconnect();
   }
 }
