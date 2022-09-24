@@ -10,8 +10,10 @@ Why not...?
   - projects rely on TR-064
   - hard coded values (WiFi settings, SIP settings, ...) (on the other side: This is a security feature)
 
-- ESPHome -> 433 MHz support very limited
-- ESPHome -> cannot configure variables that should be on the node
+- ESPHome
+  - 433 MHz support very limited
+  - cannot configure variables that should be on the node (perhaps it could? https://esphome.io/web-api/index.html#number)
+  - couldn't find a way to easily pass parameters (SIP-User, SIP-Password, ...) to an ESPHome custom component
 
 Features
 --------
@@ -27,6 +29,7 @@ TODOs
 - artefact releasing via GHA action
 - WLAN-AP with PSK including "+" not working -> https://github.com/maakbaas/esp8266-iot-framework/issues/155
 - protect HTTP access
+- MQTT status updates (online/offline) via LWT
 - Listen for offhocking and do not hangup by ourself then (otherwise the call gets killed and the door could possible not being opened)
 - Learn mode for 433 MHz signals?
 - Support for door relais, see https://www.mikrocontroller.net/topic/444994#5814241 https://de.wikipedia.org/wiki/Mehrfrequenzwahlverfahren#%C3%9Cbertragungsmodi_bei_Internettelefonie
