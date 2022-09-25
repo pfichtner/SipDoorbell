@@ -30,7 +30,7 @@ TODOs
 - WLAN-AP with PSK including "+" not working -> https://github.com/maakbaas/esp8266-iot-framework/issues/155
 - protect HTTP access
 - MQTT status updates (online/offline) via LWT
-- Listen for offhocking and do not hangup by ourself then (otherwise the call gets killed and the door could possible not being opened)
+- Listen for offhooking and do not hangup by ourself then (otherwise the call gets killed and the door could possible not being opened)
 - Learn mode for 433 MHz signals?
 - Support for door relais, see https://www.mikrocontroller.net/topic/444994#5814241 https://de.wikipedia.org/wiki/Mehrfrequenzwahlverfahren#%C3%9Cbertragungsmodi_bei_Internettelefonie
 - Could include TR-064 as well as alternative to SIP
@@ -40,7 +40,7 @@ Projects used
 - ESP8266 IoT Framework
 - knolleary/PubSubClient
 - https://github.com/1technophile/rc-switch.git
-- https://github.com/dl9sec/ArduinoSIP.git
+- https://github.com/dl9sec/ArduinoSIP.git (fork https://github.com/pfichtner/ArduinoSIP)
 
 Possible useful projects
 ------------------------
