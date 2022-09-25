@@ -1,8 +1,11 @@
 name: PlatformIO CI
 
-on:
-  release:
-    types: [published]
+on: 
+#  release:
+#    types: [published]
+  push:
+    tags:
+    - '*'
 
 jobs:
   build:
