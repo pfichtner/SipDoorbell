@@ -33,8 +33,7 @@ jobs:
       # run: pio run -e <ID_1> -e <ID_2> -e <ID_N>
       run: pio run
     - name: Relase
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1.10.0
       with:
         artifacts: ".pio/build/nodemcuv2/firmware.bin"
-        token: ${{ secrets.YOUR_GITHUB_TOKEN }}
 
