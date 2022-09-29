@@ -1,3 +1,6 @@
+[![PlatformIO CI](https://github.com/pfichtner/SipDoorbell/actions/workflows/platform-io-ci.yml/badge.svg)](https://github.com/pfichtner/SipDoorbell/actions/workflows/platform-io-ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 SipDoorBell
 -----------
 
