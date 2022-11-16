@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout
     - name: Cache pip
@@ -24,10 +24,6 @@ jobs:
       with:
         path: ~/.platformio
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-    - name: Set up Python
-      uses: actions/setup-python
-      with:
-        python-version: '2.7' 
     - name: Setup PlatformIO
       uses: n-vr/setup-platformio-action@v1
       with:
