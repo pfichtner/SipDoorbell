@@ -37,7 +37,7 @@ jobs:
       # run: pio run -e <ID_1> -e <ID_2> -e <ID_N>
       run: pio run
     - name: Release
-      uses: ncipollo/release-action@v1.10.0
+      uses: ncipollo/release-action@v1.11.2
       with:
         artifacts: ".pio/build/nodemcuv2/firmware.bin"
 
