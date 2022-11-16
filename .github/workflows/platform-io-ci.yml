@@ -2,6 +2,9 @@ name: PlatformIO CI
 
 on: 
   push:
+  schedule:
+  # each first day of month
+  - cron: "0 0 1 * *"
   workflow_dispatch:
 
 jobs:
