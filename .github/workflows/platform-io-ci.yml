@@ -24,12 +24,14 @@ jobs:
       with:
         path: ~/.platformio
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-    - name: Set up Python
-      uses: actions/setup-python@v2
-    - name: Install PlatformIO
-      run: |
-        python -m pip install --upgrade pip
-        pip install --upgrade platformio
+    - uses: actions/checkout@v3
+    - name: Setup PlatformIO
+      uses: n-vr/setup-platformio-action@v1
+      with:
+        platformio-version: "6.1.4"
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 14 # npm dependency resolution for esp8266 iot framework breaks with 16
     - name: Run PlatformIO
       # run: pio run -e <ID_1> -e <ID_2> -e <ID_N>
       run: pio run
