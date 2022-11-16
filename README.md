@@ -32,7 +32,6 @@ Features
 
 TODOs
 -----
-- WLAN-AP with PSK including "+" not working -> https://github.com/maakbaas/esp8266-iot-framework/issues/155
 - protect HTTP access
 - MQTT status updates (online/offline) via LWT
 - Listen for offhooking and do not hangup by ourself then (otherwise the call gets killed and the door could possible not being opened)
