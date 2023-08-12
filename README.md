@@ -15,7 +15,7 @@ Why not...?
 
 - ESPHome
   - 433 MHz support very limited
-  - cannot configure variables that should be on the node
+  - cannot configure variables that should be on the node (at least not via an included HTML UI)
   - couldn't find a way to easily pass parameters (SIP-User, SIP-Password, ...) to an ESPHome custom component
   - Perhaps the last two items are wrong, see
     - https://esphome.io/web-api/index.html#number (configure values stored on the node)
