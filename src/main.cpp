@@ -118,6 +118,15 @@ void configDependendBegins(void)
   rcSwitchBegin();
 }
 
+switchGpioBegin(void)
+{
+  if (configManager.data.switch_gpiopin > 0) 
+  {
+    pinMode(configManager.data.switch_gpiopin, OUTPUT);
+    digitalWrite(configManager.data.switch_gpiopin, LOW);
+  }
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -126,13 +135,14 @@ void setup()
   GUI.begin();
   configManager.begin();
   configManager.setConfigSaveCallback(configDependendBegins);
+  switchGpioBegin()
   WiFiManager.begin(configManager.data.projectName);
   dash.begin(500);
   WiFi.hostname(configManager.data.wifi_hostname);
   WiFi.begin();
 
   localIp = WiFi.localIP().toString();
-  Serial.print(F("Connected"));
+  Serial.println(F("Connected"));
 
   configDependendBegins();
 }
