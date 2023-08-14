@@ -104,6 +104,15 @@ void inputPinBegin(void)
   }
 }
 
+void outputPinBegin(void)
+{
+  if (configManager.data.switch_gpiopin > 0) 
+  {
+    pinMode(configManager.data.switch_gpiopin, OUTPUT);
+    digitalWrite(configManager.data.switch_gpiopin, LOW);
+  }
+}
+
 void rcSwitchBegin(void)
 {
   mySwitch.enableReceive(configManager.data.rcswitch_gpiopin);
@@ -115,17 +124,8 @@ void configDependendBegins(void)
   sipBegin();
 
   inputPinBegin();
-  switchGpioBegin();
+  outputPinBegin();
   rcSwitchBegin();
-}
-
-switchGpioBegin(void)
-{
-  if (configManager.data.switch_gpiopin > 0) 
-  {
-    pinMode(configManager.data.switch_gpiopin, OUTPUT);
-    digitalWrite(configManager.data.switch_gpiopin, LOW);
-  }
 }
 
 void setup()
