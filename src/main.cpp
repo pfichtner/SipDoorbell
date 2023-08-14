@@ -115,6 +115,7 @@ void configDependendBegins(void)
   sipBegin();
 
   inputPinBegin();
+  switchGpioBegin();
   rcSwitchBegin();
 }
 
@@ -135,7 +136,6 @@ void setup()
   GUI.begin();
   configManager.begin();
   configManager.setConfigSaveCallback(configDependendBegins);
-  switchGpioBegin()
   WiFiManager.begin(configManager.data.projectName);
   dash.begin(500);
   WiFi.hostname(configManager.data.wifi_hostname);
