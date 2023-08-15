@@ -41,10 +41,10 @@ TODOs
 
 Projects used
 -------------
-- ESP8266 IoT Framework
-- knolleary/PubSubClient
-- https://github.com/1technophile/rc-switch.git
-- https://github.com/dl9sec/ArduinoSIP.git (fork https://github.com/pfichtner/ArduinoSIP)
+- [ESP8266 IoT Framework](https://github.com/maakbaas/esp8266-iot-framework)
+- [PubSubClient](https://github.com/knolleary/pubsubclient)
+- [rc-switch](https://github.com/1technophile/rc-switch)
+- Fork of [ArduinoSIP](https://github.com/dl9sec/ArduinoSIP) (https://github.com/pfichtner/ArduinoSIP)
 
 Possible useful projects
 ------------------------
