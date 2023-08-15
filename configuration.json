@@ -79,6 +79,15 @@
         "value": "-1"
     },
     {
+        "name": "button_gpiopin_mode",
+        "label": "Input mode of the GPIO Pin to connect a push button which triggers a call",
+        "type": "char",
+        "length": 20,
+	"control": "select",
+	"options": ["", "PULLUP", "PULLUP (internal)", "PULLDOWN"], 
+        "value": ""
+    },
+    {
         "name": "switch_gpiopin",
         "label": "GPIO Pin switched HIGH when button press detected",
         "type": "int16_t",
