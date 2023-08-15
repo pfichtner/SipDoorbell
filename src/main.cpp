@@ -100,17 +100,17 @@ void inputPinBegin(void)
     Serial.print(configManager.data.button_gpiopin);
     Serial.println(F(" configured for input button"));
 
-    if (strcmp("PULLUP", configManager.data.button_gpiopin_mode)
+    if (strcmp("PULLUP", configManager.data.button_gpiopin_mode))
     {
       pinMode(configManager.data.button_gpiopin, INPUT);
       pin_pressed_is = LOW;
     }
-    else if (strcmp("PULLUP (internal)", configManager.data.button_gpiopin_mode)
+    else if (strcmp("PULLUP (internal)", configManager.data.button_gpiopin_mode))
     {
       pinMode(configManager.data.button_gpiopin, INPUT_PULLUP);
       pin_pressed_is = LOW;
     }
-    else if (strcmp("PULLDOWN", configManager.data.button_gpiopin_mode)
+    else if (strcmp("PULLDOWN", configManager.data.button_gpiopin_mode))
     {
       pinMode(configManager.data.button_gpiopin, INPUT);
       pin_pressed_is = HIGH;
