@@ -26,7 +26,7 @@ Features
 - Configurable via Web-Interface so no need to compile your own firmware, you just need to download and to flash the microcontroller (see https://tasmota.github.io/docs/Getting-Started/#flashing for example for how to flash a D1 mini). Please note: Those values can be changed by anyone having access to your network since there is no authentication/authorization (yet) implemented! 
 - Acts as normal SIP-Client so it can be used not only with TR064-enabled devices but every SIP-Server/SIP-enabled hardware
 - Can can be initiated via 433 MHz signal (e.g. wireless doorbell sender)
-- Can can be initiated via button (e.g. a simple push button and/or optocoppler to make an existent doorbell a smart doorbell)
+- Can can be initiated via button (e.g. a simple push button and/or optocoppler to make an existent doorbell a smart doorbell). The call gets initiated when the pin gets HIGH, so when connecting a button you would have to use pulldown resistor
 - Can switch GPIO pin on ring (e.g. to visualize via LED and/or do some action on another microcontroller)
 - Can publish mqtt messages on ring so other tasks can be done via integration platforms like ioBroker, home assistant, node red, ...
 
