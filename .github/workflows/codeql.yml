@@ -59,8 +59,8 @@ jobs:
 
       # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@6a28655e3dcb49cb0840ea372fd6d17733edd8a4 # v2.21.8
+      # - name: Autobuild
+      #   uses: github/codeql-action/autobuild@6a28655e3dcb49cb0840ea372fd6d17733edd8a4 # v2.21.8
 
       # ℹ️ Command-line programs to run using the OS shell.
       # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
@@ -71,6 +71,23 @@ jobs:
       # - run: |
       #   echo "Run, Build Application using script"
       #   ./location_of_script_within_repo/buildscript.sh
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v3
+        with:
+          path: ~/.platformio
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
+      - name: Setup PlatformIO
+        uses: n-vr/setup-platformio-action@v1
+        with:
+          platformio-version: "6.1.5"
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Run PlatformIO
+        run: pio run
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@6a28655e3dcb49cb0840ea372fd6d17733edd8a4 # v2.21.8
