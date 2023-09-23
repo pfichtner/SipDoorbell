@@ -73,17 +73,17 @@ jobs:
       #   ./location_of_script_within_repo/buildscript.sh
 
       - name: Cache PlatformIO
-        uses: actions/cache@v3
+        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: ~/.platformio
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Setup PlatformIO
-        uses: n-vr/setup-platformio-action@v1
+        uses: n-vr/setup-platformio-action@ef5952e6a4d30c219158b781a84d31b018549c20 # v1.0.1
         with:
           platformio-version: "6.1.5"
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
           node-version: 18
       - name: Run PlatformIO
