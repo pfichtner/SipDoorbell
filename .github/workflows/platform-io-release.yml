@@ -7,37 +7,45 @@ on:
     tags:
     - '*'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v4
+    - name: Harden Runner
+      uses: step-security/harden-runner@8ca2b8b2ece13480cda6dacd3511b49857a23c09 # v2.5.1
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
     - name: Cache pip
-      uses: actions/cache@v3
+      uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
     - name: Cache PlatformIO
-      uses: actions/cache@v3
+      uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
       with:
         path: ~/.platformio
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
     - name: Setup PlatformIO
-      uses: n-vr/setup-platformio-action@v1
+      uses: n-vr/setup-platformio-action@ef5952e6a4d30c219158b781a84d31b018549c20 # v1.0.1
       with:
         platformio-version: "6.1.5"
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
       with:
         node-version: 18
     - name: Run PlatformIO
       # run: pio run -e <ID_1> -e <ID_2> -e <ID_N>
       run: pio run
     - name: Release
-      uses: ncipollo/release-action@v1.13.0
+      uses: ncipollo/release-action@6c75be85e571768fa31b40abf38de58ba0397db5 # v1.13.0
       with:
         artifacts: ".pio/build/nodemcuv2/firmware.bin"
 
