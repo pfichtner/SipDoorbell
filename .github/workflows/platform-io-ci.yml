@@ -1,5 +1,6 @@
 name: PlatformIO CI
-
+permissions:
+  contents: read
 on: 
   push:
   schedule:
