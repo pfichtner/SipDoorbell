@@ -29,14 +29,11 @@ jobs:
       with:
         path: ~/.platformio
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-    - name: Setup PlatformIO
-      uses: n-vr/setup-platformio-action@ef5952e6a4d30c219158b781a84d31b018549c20 # v1.0.1
-      with:
-        platformio-version: "6.1.5"
-    - name: Downgrade python until https://github.com/maakbaas/esp8266-iot-framework/issues/168 gets resolved
+    - name: Install python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11' 
+    - run: pip install platformio=6.1.5
     - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
       with:
         node-version: 18
