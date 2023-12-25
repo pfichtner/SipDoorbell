@@ -78,10 +78,11 @@ jobs:
           path: ~/.platformio
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
-      - name: Setup PlatformIO
-        uses: n-vr/setup-platformio-action@ef5952e6a4d30c219158b781a84d31b018549c20 # v1.0.1
+      - name: Install python
+        uses: actions/setup-python@v5
         with:
-          platformio-version: "6.1.5"
+          python-version: '3.11' 
+      - run: pip install platformio==6.1.5
 
       - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
