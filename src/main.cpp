@@ -30,7 +30,7 @@ unsigned long dialingStartedAt;
 RCSwitch mySwitch = RCSwitch();
 
 // gpio input can be configured pullup and pulldown, so HIGH or LOW could signal a button press
-boolean pin_pressed_is = HIGH;
+int pin_pressed_is = HIGH;
 
 // Tasks
 struct task
