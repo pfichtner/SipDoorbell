@@ -97,6 +97,7 @@ void inputPinBegin(void)
 {
   if (configManager.data.button_gpiopin > 0)
   {
+    Serial.print(F("GPIO "));
     Serial.print(configManager.data.button_gpiopin);
     Serial.print(F(" configured for input button "));
     pinMode(configManager.data.button_gpiopin, INPUT);
