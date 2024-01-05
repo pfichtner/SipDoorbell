@@ -112,7 +112,7 @@ void inputPinBegin(void)
     }
     else 
     {
-      # PULLDOWN
+      // PULLDOWN
       pinMode(configManager.data.button_gpiopin, INPUT);
       pin_pressed_is = HIGH;
     }
