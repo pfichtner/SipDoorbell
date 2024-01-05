@@ -40,3 +40,8 @@ jobs:
     - name: Run PlatformIO
       # run: pio run -e <ID_1> -e <ID_2> -e <ID_N>
       run: pio run
+    - name: Archive built firmware image
+      uses: actions/upload-artifact@v3
+      with:
+        name: firmware.bin
+        path: .pio/build/nodemcuv2/firmware.bin
