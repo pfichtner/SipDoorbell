@@ -110,8 +110,9 @@ void inputPinBegin(void)
       pinMode(configManager.data.button_gpiopin, INPUT_PULLUP);
       pin_pressed_is = LOW;
     }
-    else if (strcmp("PULLDOWN", configManager.data.button_gpiopin_mode))
+    else 
     {
+      # PULLDOWN
       pinMode(configManager.data.button_gpiopin, INPUT);
       pin_pressed_is = HIGH;
     }
