@@ -98,22 +98,24 @@ void inputPinBegin(void)
   if (configManager.data.button_gpiopin > 0)
   {
     Serial.print(configManager.data.button_gpiopin);
-    Serial.println(F(" configured for input button"));
+    Serial.print(F(" configured for input button "));
+    pinMode(configManager.data.button_gpiopin, INPUT);
 
-    if (strcmp("PULLUP", configManager.data.button_gpiopin_mode))
+    if (strcmp("PULLUP", configManager.data.button_gpiopin_mode) == 0)
     {
-      pinMode(configManager.data.button_gpiopin, INPUT);
+      Serial.println(F("pullup"));
       pin_pressed_is = LOW;
     }
-    else if (strcmp("PULLUP (internal)", configManager.data.button_gpiopin_mode))
+    else if (strcmp("PULLUP (internal)", configManager.data.button_gpiopin_mode) == 0)
     {
+      Serial.println(F("pullup (internal)"));
       pinMode(configManager.data.button_gpiopin, INPUT_PULLUP);
       pin_pressed_is = LOW;
     }
     else 
     {
       // PULLDOWN
-      pinMode(configManager.data.button_gpiopin, INPUT);
+      Serial.println(F("pulldown"));
       pin_pressed_is = HIGH;
     }
   }
@@ -208,6 +210,7 @@ void buttonLoop(void)
 {
   if (digitalRead(configManager.data.button_gpiopin) == pin_pressed_is)
   {
+    Serial.print(F("GPIO "));
     Serial.print(configManager.data.button_gpiopin);
     Serial.println(F(" button press detected"));
     dial();
