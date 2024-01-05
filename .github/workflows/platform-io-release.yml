@@ -7,37 +7,51 @@ on:
     tags:
     - '*'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v3
+    - name: Harden Runner
+      uses: step-security/harden-runner@eb238b55efaa70779f274895e782ed17c84f2895 # v2.6.1
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
     - name: Cache pip
-      uses: actions/cache@v3
+      uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
     - name: Cache PlatformIO
-      uses: actions/cache@v3
+      uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
       with:
         path: ~/.platformio
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-    - name: Setup PlatformIO
-      uses: n-vr/setup-platformio-action@v1
+    - name: Install python
+      uses: actions/setup-python@v5
       with:
-        platformio-version: "6.1.5"
-    - uses: actions/setup-node@v3
+        python-version: '3.11' 
+    - run: pip install platformio==6.1.5
+    - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
       with:
         node-version: 18
+    - name: Archive built firmware image
+      uses: actions/upload-artifact@v3
+      with:
+        name: firmware.bin
+        path: .pio/build/nodemcuv2/firmware.bin
     - name: Run PlatformIO
       # run: pio run -e <ID_1> -e <ID_2> -e <ID_N>
       run: pio run
     - name: Release
-      uses: ncipollo/release-action@v1.12.0
+      uses: ncipollo/release-action@6c75be85e571768fa31b40abf38de58ba0397db5 # v1.13.0
       with:
         artifacts: ".pio/build/nodemcuv2/firmware.bin"
 

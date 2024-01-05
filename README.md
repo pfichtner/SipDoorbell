@@ -30,6 +30,12 @@ Features
 - Can switch GPIO pin on ring (e.g. to visualize via LED and/or do some action on another microcontroller)
 - Can publish mqtt messages on ring so other tasks can be done via integration platforms like ioBroker, home assistant, node red, ...
 
+Upload/flash ESP8266
+--------------------
+You can flash the firmware like other firmwares (e.g. [tasmota](https://tasmota.github.io/docs/)) using tools like 
+[esptool](https://pypi.org/project/esptool/) or [tasmotizer](https://github.com/tasmota/tasmotizer). 
+Further updates (or even flashing of another firmware) can then be done via the included OTA (over-the-air) updater using the builtin WebUI. 
+
 TODOs
 -----
 - protect HTTP access
