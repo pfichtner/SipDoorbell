@@ -29,6 +29,9 @@ unsigned long dialingStartedAt;
 // RCSWITCH
 RCSwitch mySwitch = RCSwitch();
 
+// gpio input can be configured pullup and pulldown, so HIGH or LOW could signal a button press
+int pin_pressed_is = HIGH;
+
 // Tasks
 struct task
 {
@@ -94,9 +97,28 @@ void inputPinBegin(void)
 {
   if (configManager.data.button_gpiopin > 0)
   {
+    Serial.print(F("GPIO "));
     Serial.print(configManager.data.button_gpiopin);
-    Serial.println(F(" configured for input button"));
+    Serial.print(F(" configured for input button "));
     pinMode(configManager.data.button_gpiopin, INPUT);
+
+    if (strcmp("PULLUP", configManager.data.button_gpiopin_mode) == 0)
+    {
+      Serial.println(F("pullup"));
+      pin_pressed_is = LOW;
+    }
+    else if (strcmp("PULLUP (internal)", configManager.data.button_gpiopin_mode) == 0)
+    {
+      Serial.println(F("pullup (internal)"));
+      pinMode(configManager.data.button_gpiopin, INPUT_PULLUP);
+      pin_pressed_is = LOW;
+    }
+    else 
+    {
+      // PULLDOWN
+      Serial.println(F("pulldown"));
+      pin_pressed_is = HIGH;
+    }
   }
   else
   {
@@ -187,8 +209,9 @@ void dial(void)
 
 void buttonLoop(void)
 {
-  if (digitalRead(configManager.data.button_gpiopin) == HIGH)
+  if (digitalRead(configManager.data.button_gpiopin) == pin_pressed_is)
   {
+    Serial.print(F("GPIO "));
     Serial.print(configManager.data.button_gpiopin);
     Serial.println(F(" button press detected"));
     dial();
