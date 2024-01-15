@@ -43,7 +43,7 @@ jobs:
       with:
         node-version: 18
     - name: Archive built firmware image
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: firmware.bin
         path: .pio/build/nodemcuv2/firmware.bin
