@@ -33,10 +33,10 @@ Features
 Schematics
 ----------
 ![doorbell-breadboard.png](https://pfichtner.github.io/SipDoorbell/doorbell-breadboard.png)
-Each of the following "modules" is optional! 
+**Each of the following "modules" is optional (except the ESP :smirk:)!** 
 - left side hand there is the 433 MHz receiver
 - in the middle there is a push button (momentary switch). Alternatively you can use an optocoppler to attach an existing door bell. In the example a pull-down resistor is used, you can configure SipDoorBell also to use the bultin resistor or to do pull-up. 
-- on the right hand side there is a led visualizing a ring (because the push button has been pressed or the configured 433 MHz signal was detected). Also here could be used an optocoppler to switch any other device, e.g. another microcontroller
+- on the right hand side there is a led visualizing a ring. You can configure a GPIO pin to become "HIGH" in case the push button has been pressed or the configured 433 MHz signal was detected. Also here could be used an optocoppler to switch any other device, e.g. another microcontroller
 
 Upload/flash ESP8266
 --------------------
