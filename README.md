@@ -26,9 +26,17 @@ Features
 - Configurable via Web-Interface so no need to compile your own firmware, you just need to download and to flash the microcontroller (see https://tasmota.github.io/docs/Getting-Started/#flashing for example for how to flash a D1 mini). Please note: Those values can be changed by anyone having access to your network since there is no authentication/authorization (yet) implemented! 
 - Acts as normal SIP-Client so it can be used not only with TR064-enabled devices but every SIP-Server/SIP-enabled hardware
 - Can can be initiated via 433 MHz signal (e.g. wireless doorbell sender)
-- Can can be initiated via button/momentary switch (e.g. a simple push button and/or optocoppler to make an existent doorbell a smart doorbell). Supported pin modes are pullup (with and w/o internal resistor, LOW indicates button pressed) and pulldown (HIGH indicates button pressed)
-- Can switch GPIO pin on ring (e.g. to visualize via LED and/or do some action on another microcontroller)
+- Can can be initiated via push button (momentary switch) (e.g. a simple push button and/or optocoppler to make an existent doorbell a smart doorbell). Supported pin modes are pullup (with and w/o internal resistor, LOW indicates button pressed) and pulldown (HIGH indicates button pressed)
+- Can switch GPIO pin on ring (e.g. to visualize via led and/or do some action on another microcontroller)
 - Can publish mqtt messages on ring so other tasks can be done via integration platforms like ioBroker, home assistant, node red, ...
+
+Schematics
+----------
+![doorbell-breadboard.png](https://pfichtner.github.io/SipDoorbell/doorbell-breadboard.png)
+Each of the following "modules" is optional! 
+- left side hand there is the 433 MHz receiver
+- in the middle there is a push button (momentary switch). Alternatively you can use an optocoppler to attach an existing door bell. In the example a pull-down resistor is used, you can configure SipDoorBell also to use the bultin resistor or to do pull-up. 
+- on the right hand side there is a led visualizing a ring (because the push button has been pressed or the configured 433 MHz signal was detected). Also here could be used an optocoppler to switch any other device, e.g. another microcontroller
 
 Upload/flash ESP8266
 --------------------
