@@ -32,7 +32,7 @@ Features
 
 Schematics
 ----------
-![doorbell-breadboard.png](https://pfichtner.github.io/SipDoorbell/doorbell-breadboard.png)
+![doorbell-breadboard.png](https://pfichtner.github.io/assets/SipDoorbell/doorbell-breadboard.png)
 **Each of the following "modules" is optional (except the ESP :smirk:)!** 
 - left side hand there is the 433 MHz receiver
 - in the middle there is a push button (momentary switch). Alternatively you can use an optocoppler to attach an existing door bell (see e.g. https://www.reichelt.de/magazin/projekte/smarte-tuerklingel/). In the example a pull-down resistor is used, you can configure SipDoorBell also to use the bultin resistor or to do pull-up. 
